@@ -1,0 +1,104 @@
+{
+    "cop": {
+        "image": "lhaskins/fabric-cop:latest",
+        "command": "sh -c 'cop server start -ca ~/.cop/ec.pem -ca-key ~/.cop/ec-key.pem -config /config/cop.json -address 0.0.0.0'",
+        "ports": {
+            "1": "8888:8888"
+        }
+    },
+    "orderer": {
+        "image": "lhaskins/fabric-orderer",
+        "environment": {
+            "ORDERER_GENERAL_LEDGERTYPE": "ram",
+            "ORDERER_GENERAL_BATCHTIMEOUT": "10s",
+            "ORDERER_GENERAL_BATCHSIZE": "10",
+            "ORDERER_GENERAL_MAXWINDOWSIZE": "1000",
+            "ORDERER_GENERAL_ORDERERTYPE": "solo",
+            "ORDERER_GENERAL_LISTENADDRESS": "0.0.0.0",
+            "ORDERER_RAMLEDGER_HISTORY_SIZE": "100"
+        },
+        "command": "orderer",
+        "ports": {
+            "1": "5151:7050"
+        }
+    },
+    "vp0": {
+        "image": "lhaskins/fabric-peer",
+        "environment": {
+             "CORE_PEER_ADDRESSAUTODETECT": "true",
+             "CORE_VM_ENDPOINT": "unix:///host/var/run/docker.sock",
+             "CORE_LOGGING_LEVEL": "DEBUG",
+             "CORE_PEER_NETWORKID": "${CORE_PEER_NETWORKID}",
+             "CORE_NEXT": "true",
+             "CORE_PEER_ENDORSER_ENABLED": "true",
+             "CORE_PEER_ID": "vp0",
+             "CORE_PEER_PROFILE_ENABLED": "true",
+             "CORE_PEER_COMMITTER_LEDGER_ORDERER": "orderer:7050"
+        },
+        "volumes": {
+             "1": "/var/run:/host/var/run/"
+        },
+        "command": "peer node start",
+        "links": {
+             "1": "orderer",
+             "2": "cop"
+        },
+        "ports": {
+             "1": "7051:7051"
+        }
+    },
+    "vp1": {
+        "image": "lhaskins/fabric-peer",
+        "environment": {
+             "CORE_PEER_ADDRESSAUTODETECT": "true",
+             "CORE_VM_ENDPOINT": "unix:///host/var/run/docker.sock",
+             "CORE_LOGGING_LEVEL": "DEBUG",
+             "CORE_PEER_NETWORKID": "${CORE_PEER_NETWORKID}",
+             "CORE_NEXT": "true",
+             "CORE_PEER_ENDORSER_ENABLED": "true",
+             "CORE_PEER_ID": "vp1",
+             "CORE_PEER_PROFILE_ENABLED": "true",
+             "CORE_PEER_COMMITTER_LEDGER_ORDERER": "orderer:7050",
+             "CORE_PEER_DISCOVERY_ROOTNODE": "vp0:7051"
+        },
+        "volumes": {
+             "1": "/var/run:/host/var/run/"
+        },
+        "command": "peer node start",
+        "links": {
+             "1": "orderer",
+             "2": "cop",
+             "3": "vp0"
+        },
+        "ports": {
+            "1": "7052:7051"
+        }
+    },
+    "vp2": {
+        "image": "lhaskins/fabric-peer",
+        "environment": {
+             "CORE_PEER_ADDRESSAUTODETECT": "true",
+             "CORE_VM_ENDPOINT": "unix:///host/var/run/docker.sock",
+             "CORE_LOGGING_LEVEL": "DEBUG",
+             "CORE_PEER_NETWORKID": "${CORE_PEER_NETWORKID}",
+             "CORE_NEXT": "true",
+             "CORE_PEER_ENDORSER_ENABLED": "true",
+             "CORE_PEER_ID": "vp2",
+             "CORE_PEER_PROFILE_ENABLED": "true",
+             "CORE_PEER_COMMITTER_LEDGER_ORDERER": "orderer:7050",
+             "CORE_PEER_DISCOVERY_ROOTNODE": "vp0:7051"
+        },
+        "volumes": {
+             "1": "/var/run./host/var/run/"
+        },
+        "command": "peer node start",
+        "links": {
+             "1": "orderer",
+             "2": "cop",
+             "3": "vp0"
+        },
+        "ports": {
+             "1": "7053:7051"
+        }
+    }
+}
