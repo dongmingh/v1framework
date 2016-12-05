@@ -39,7 +39,7 @@ if [ $CDB == "cdb" ]; then
        echo "create network: cop, orderer, 2 peers with CouchDB"
        docker-compose -f docker-compose.yml up -d --force-recreate orderer couchdb0 couchdb1 vp0 vp1
    elif [ $req == "add" ]; then
-       echo "add an peer to the network with CouchDB"
+       echo "add a peer to the network with CouchDB"
        docker-compose -f docker-compose.yml up -d couchdb2 vp2
    fi
 
@@ -51,7 +51,7 @@ elif [ $CDB == "nocdb" ]; then
        echo "create network: cop, orderer, 2 peers"
        docker-compose -f docker-compose.yml up -d --force-recreate orderer vp0 vp1
    elif [ $req == "add" ]; then
-       echo "add an peer to the network"
+       echo "add a peer to the network"
        docker-compose -f docker-compose.yml up -d vp2
    fi
 
