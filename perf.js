@@ -39,6 +39,8 @@ var utils = require('../../lib/utils.js');
 
 var chain = hfc.newChain('testChain-e2e');
 var webUser;
+var t_start;
+var i = 0;
 var chaincode_id = 'mycc1';
 
 testUtil.setupChaincodeDeploy();
@@ -62,14 +64,16 @@ var grpcArgs = [];
 for (i=0; i<3; i++) {
     grpcArgs.push(hfc.getPeer(g[i]));
 }
-    //targets: [hfc.getPeer(g1), hfc.getPeer(g2), hfc.getPeer(g3) ],
 
 var transType = process.argv[2];
-var nTrans = parseInt(process.argv[3]);
-var t_start;
+var nTrans;
+if ( transType.toUpperCase() == 'DEPLOY' ) {
+    nTrans = 1;
+} else {
+    nTrans = parseInt(process.argv[3]);
+}
+console.log('transType: %s, nTrans: %d', transType, nTrans);
 
-var webUser;
-var i = 0;
 
 var request_deploy = {
     targets: grpcArgs,
@@ -123,11 +127,10 @@ function deploy_test() {
         })
     .then(
         function(response) {
-                console.log('ordered deployment endorsement.' );
             if (response.Status === 'SUCCESS') {
                 console.log('Successfully ordered deployment endorsement.' );
                 console.log('need to wait now for the committer to catch up' );
-                return;
+                return sleep(20000);
             } else {
                 console.log('Failed to order the deployment endorsement. Error code: ', response.status);
             }
@@ -158,11 +161,7 @@ function invoke_test() {
                         invoke_test();
                     },20000);
                 } else {
-//                    setTimeout(function(){
-//                        query_test();
-//                    },2000);
                     console.log('invoke_test completed');
-//                    return sleep(20000);
                     return
                 }
             } else {
@@ -210,6 +209,7 @@ function query_test() {
 }
 
 function simple_test() {
+    i = 0;
     chain.enroll('sdk', 'sdkpw')
     .then(
         function(admin) {
