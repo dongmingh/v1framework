@@ -7,6 +7,7 @@ The utility can either create a network with 1 cop, 1 orderer and the specified 
     fabric-sdk-node: a7f57baca0ece7111f74f7b9174c2083df7cda86
 
 
+
 #Usage
 
     ./driver.sh [action] [n] [option]
@@ -20,6 +21,8 @@ The utility can either create a network with 1 cop, 1 orderer and the specified 
  - blank if no CouchDB
 
  
+Note that the IP addresses in the two json files need to be changed to the same address where the network is.
+
 ##Examples
 
 ###Without CouchDB: 
